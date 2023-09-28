@@ -1,4 +1,5 @@
 import sys
+from importlib.resources import read_text
 from pathlib import Path
 
 import click
@@ -32,7 +33,7 @@ def get_template_content(template):
     """
     Reads the template YAML file and returns a dictionary with its content.
     """
-    template_file = TEMPLATES_DIR / f"{template}.yaml"
+    template_file = get_templates_dir() / f"{template}.yaml"
 
     try:
         with open(template_file, "rt", encoding="UTF-8") as file:
@@ -65,55 +66,11 @@ def get_default_template_file_path() -> Path:
 
     default_template_file = default_dir / "template.yaml"
     if not default_template_file.exists():
-        click.echo("The default template does not exist. Creating it...")
+        default_template = read_text("lmt_cli.templates", "default.yaml")
         with open(default_template_file, "w", encoding="UTF-8") as file:
-            file.write(DEFAULT_TEMPLATE_CONTENT)
+            file.write(default_template)
 
     return default_template_file
 
 
-TEMPLATES_DIR = get_templates_dir()
 
-DEFAULT_TEMPLATE_CONTENT = """# Documentation: https://github.com/sderev/lmt
-
-# You may leave either of the fields empty. 
-
-
-# Here, you can instruct how you want ChatGPT to behave.
-# For example, you might say:
-# "You are an AI modeled after Emil Cioran, the Romanian philosopher and essayist.
-# You have a deep understanding of existentialism and philosophical pessimism."
-# The more precise and detailed, the better!
-system:
-
-
-
-
-# Here, you should write what you want to say to ChatGPT.
-# For example: "As a language model yourself, how do you view your own existence?"
-user:
-
-
-
-
-# You can change the model according to the list below.
-# The default model is "gpt-3.5-turbo".
-# More advanced models might provide more accurate or detailed responses,
-# but they also have a higher "cost per 1K tokens". Tokens refer to chunks of text that AI models read. More tokens usually mean more cost.
-model: "gpt-3.5-turbo"
-
-
-# Valid Models
-#
-# "chatgpt" or "gpt-3.5-turbo"
-# "chatgpt-16k" or "gpt-3.5-turbo-16k"
-#
-# "3.5" or "gpt-3.5-turbo"
-# "3.5-16k" or "gpt-3.5-turbo-16k"
-#
-# "4" or "gpt-4"
-# "gpt4" or "gpt-4"
-#
-# "4-32k" or "gpt-4-32k"
-# "gpt4-32k" or "gpt-4-32k"
-"""
