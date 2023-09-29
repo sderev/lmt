@@ -6,7 +6,7 @@ import click
 from click_default_group import DefaultGroup
 
 from .lib import *
-from .templates import TEMPLATES_DIR, get_default_template_file_path
+from .templates import get_default_template_file_path, get_templates_dir
 
 VALID_MODELS = {
     "chatgpt": "gpt-3.5-turbo",
@@ -239,8 +239,9 @@ def print_templates_list():
     """
     List the available templates.
     """
+    templates_dir = get_templates_dir()
     templates_names_list = sorted(
-        [template.stem for template in TEMPLATES_DIR.iterdir()]
+        [template.stem for template in templates_dir.iterdir()]
     )
     if templates_names_list:
         click.echo("\n".join(templates_names_list))
@@ -252,7 +253,7 @@ def view_template(template):
     """
     View a template.
     """
-    template = TEMPLATES_DIR / f"{template}.yaml"
+    template = get_templates_dir() / f"{template}.yaml"
     if template.exists():
         with open(template, "r", encoding="UTF-8") as template_file:
             click.echo(template_file.read())
@@ -264,7 +265,7 @@ def edit(template):
     """
     Edit a template.
     """
-    template_file = TEMPLATES_DIR / f"{template}.yaml"
+    template_file = get_templates_dir() / f"{template}.yaml"
     if template_file.exists():
         original_file_content = template_file.read_text()
         click.edit(filename=template_file)
@@ -294,9 +295,10 @@ def add_template(template):
     """
     Create a new template
     """
+    templates_dir = get_templates_dir()
     if not template:
         template = click.prompt("Template name")
-        if template in [template.name for template in TEMPLATES_DIR.iterdir()]:
+        if template in [template.name for template in templates_dir.iterdir()]:
             click.echo(
                 click.style("Error: ", fg="red")
                 + f"Template {click.style(template, fg='red')} already exists."
@@ -307,14 +309,14 @@ def add_template(template):
             )
             return
 
-    template_file = TEMPLATES_DIR / f"{template}.yaml"
-    default_template_file = get_default_template_file_path()
+    template_file = templates_dir / f"{template}.yaml"
+    default_template_file_path = get_default_template_file_path()
 
-    shutil.copyfile(default_template_file, template_file)
+    shutil.copyfile(default_template_file_path, template_file)
 
     click.edit(filename=template_file)
 
-    if filecmp.cmp(default_template_file, template_file, shallow=False):
+    if filecmp.cmp(default_template_file_path, template_file, shallow=False):
         click.echo(
             click.style("Aborting: ", fg="red")
             + "The template has not been created because no changes were made."
@@ -333,7 +335,7 @@ def delete_template(template):
     """
     Delete the template.
     """
-    template_file = TEMPLATES_DIR / f"{template}.yaml"
+    template_file = get_templates_dir() / f"{template}.yaml"
     if template_file.exists():
         click.confirm(
             f"Are you sure you want to delete the template '{template}'?",
@@ -357,10 +359,10 @@ def rename_template(template):
     """
     Rename the template.
     """
-    template_file = TEMPLATES_DIR / template
+    template_file = get_templates_dir() / template
     if template_file.exists():
         new_template_name = click.prompt("New template name", default=template)
-        new_template_file = TEMPLATES_DIR / new_template_name
+        new_template_file = get_templates_dir() / new_template_name
         template_file.rename(new_template_file)
         click.echo(
             f"{click.style('Success!', fg='green')} Template"
