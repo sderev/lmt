@@ -31,7 +31,7 @@
 ## Features
 
 * **Access All ChatGPT Models**: `lmt` supports all available ChatGPT models (gpt-3.5-turbo, gpt-3.5-turbo-16k, gpt-4, gpt-4-32k), giving you the power to choose the most suitable one for your task.
-* **Custom Templates**: Design your own toolbox of templates to streamline your workflow.
+* **Custom Templates**: Design your own toolbox of templates.
 * **Read File**: Incorporate file content into your prompts seamlessly.
 * **Output to a File**: Redirect standard output (`stdout`) to a file or another program as needed.
 * **Easy Vim Integration**: Integrate ChatGPT into Vim effortlessly by using `lmt` as a filter command.
@@ -150,7 +150,7 @@ For an estimation of your prompt's cost before sending, utilize the `--tokens` f
 
 ### Reading from `stdin`
 
-`lmt` facilitates reading inputs directly from `stdin`, allowing you to pipe in the content of a file as a prompt. This feature can be particularly useful when dealing with longer or more complex prompts, or when you want to streamline your workflow by incorporating `lmt` into a larger pipeline of commands.
+`lmt` facilitates reading inputs directly from `stdin`, allowing you to pipe in the content of a file as a prompt.
 
 To use this feature, you simply need to pipe your content into the `lmt` command like this:
 
